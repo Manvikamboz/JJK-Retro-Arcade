@@ -12,6 +12,7 @@ interface StoryArc {
   desc: { en: string; ja: string };
   highlight: { en: string; ja: string };
   energyColor: 'pink' | 'blue' | 'purple' | 'green';
+  gifUrl: string;
 }
 
 const storyArcs: StoryArc[] = [
@@ -23,7 +24,8 @@ const storyArcs: StoryArc[] = [
       ja: "幼馴染の祈本里香の強大な呪いに憑りつかれた乙骨憂太は、五条悟の導きで都立呪術高専に入学する。仲間と出会い、呪力をコントロールすることを学ぶ中、百鬼夜行を企てる最悪の呪詛師・夏油傑との死闘に臨む。"
     },
     highlight: { en: "Yuta & Rika's pure love curse", ja: "乙骨と里香の「純愛」の呪い" },
-    energyColor: 'blue'
+    energyColor: 'blue',
+    gifUrl: "https://i.giphy.com/media/NAPq4bpz1ovK9UM2wF/giphy.gif"
   },
   {
     title: { en: "Fearsome Womb & Intro Arc", ja: "呪胎戴天・始まりの物語" },
@@ -33,7 +35,8 @@ const storyArcs: StoryArc[] = [
       ja: "虎杖悠仁は、友人を救うため特級呪物「両面宿儺の指」を喰らい、その身に呪いの王を宿す。五条悟のもとで伏黒恵、釘崎野薔薇と共に呪術高専に入学するが、少年院に突如現れた呪胎（特級呪霊）との戦闘で過酷な現実を突きつけられる。"
     },
     highlight: { en: "Nobara joins Tokyo's first-years", ja: "釘崎野薔薇が上京、1年生チーム結成" },
-    energyColor: 'pink'
+    energyColor: 'pink',
+    gifUrl: "https://i.giphy.com/media/4ccbbMI0kxdgI7afQy/giphy.gif"
   },
   {
     title: { en: "Vs. Mahito Arc", ja: "幼魚と逆罰 (対真人編)" },
@@ -43,7 +46,8 @@ const storyArcs: StoryArc[] = [
       ja: "不審死事件を調査中、虎杖は真人の謀略によって歪められた少年・吉野順平と出会い心を通わせる。しかし真人の無為転変により非情な運命を辿った順平をめぐり、虎杖は怒りと共に特級呪霊・真人との因縁の戦いへ身を投じる。"
     },
     highlight: { en: "The tragic fate of Junpei", ja: "真人の悪意と順平の悲劇" },
-    energyColor: 'purple'
+    energyColor: 'purple',
+    gifUrl: "https://i.giphy.com/media/uN0SyFsLsXQ9MbS05S/giphy.gif"
   },
   {
     title: { en: "Kyoto Goodwill Event Arc", ja: "京都姉妹校交流会編" },
@@ -53,7 +57,8 @@ const storyArcs: StoryArc[] = [
       ja: "東京校と京都校の姉妹校交流会が幕を開ける。宿儺の器である虎杖の抹殺を目論む京都校の思惑が交錯する中、特級呪霊の花御や真人が呪術高専の結界を破り強襲。学生達と共闘し、侵入者を迎え撃つ。"
     },
     highlight: { en: "Yuji and Todo unlock Black Flash", ja: "虎杖と東堂のコンビ、黒閃発動" },
-    energyColor: 'green'
+    energyColor: 'green',
+    gifUrl: "https://i.giphy.com/media/q6oUS1vaXPndgrHjvU/giphy.gif"
   },
   {
     title: { en: "Death Painting Arc", ja: "起首雷同編 (呪胎九相図)" },
@@ -63,7 +68,8 @@ const storyArcs: StoryArc[] = [
       ja: "八十八橋の怪談呪霊を追う虎杖、伏黒、釘崎の一年生トリオは、真人によって肉体を得た受肉体「呪胎九相図」の壊相・血塗と激突。極限状態の森の戦いで、釘崎は黒閃を極め、術式「共鳴り」により二人を討ち滅ぼす。"
     },
     highlight: { en: "Nobara's legendary Resonance scene", ja: "釘崎野薔薇の覚醒「共鳴り」と黒閃" },
-    energyColor: 'pink'
+    energyColor: 'pink',
+    gifUrl: "https://i.giphy.com/media/5tSxvVGYXoeajXLIOq/giphy.gif"
   },
   {
     title: { en: "Shibuya Incident Arc", ja: "渋谷事変編" },
@@ -73,7 +79,8 @@ const storyArcs: StoryArc[] = [
       ja: "2018年10月31日、渋谷駅周辺に非術師が閉じ込められ「五条悟の封印」が実行される。最強のカードを失った高専側は渋谷全域で呪詛師・呪霊と激戦を展開。宿儺の目覚めと虐殺、そして釘崎野薔薇と真人の死闘により大打撃を受ける。"
     },
     highlight: { en: "The sealing of Satoru Gojo", ja: "五条悟の封印と、破滅の一夜" },
-    energyColor: 'purple'
+    energyColor: 'purple',
+    gifUrl: "https://i.giphy.com/media/CKt9rPucjUtPaS6NRj/giphy.gif"
   },
   {
     title: { en: "Culling Game Arc", ja: "死滅回游編" },
@@ -83,7 +90,8 @@ const storyArcs: StoryArc[] = [
       ja: "伏黒津美紀の救済と五条悟の封印解除のため、虎杖達は前代未聞の呪術殺し合いゲーム「死滅回游」に参加する。強力な過去の呪術師達と渡り合い、点（ポイント）を集める中、両面宿儺による衝撃的な憑依（器の乗っ取り）が起きる。"
     },
     highlight: { en: "Ancient sorcerers battle royale", ja: "現代VS過去の呪術師、死滅回游の幕開け" },
-    energyColor: 'blue'
+    energyColor: 'blue',
+    gifUrl: "https://i.giphy.com/media/8ezz6fUfcWYlDFtKxK/giphy.gif"
   },
   {
     title: { en: "Shinjuku Showdown Arc", ja: "人外魔境新宿決戦編" },
@@ -93,7 +101,8 @@ const storyArcs: StoryArc[] = [
       ja: "封印から帰還した五条悟と、両面宿儺による「現代最強VS史上最強」の決戦が新宿で勃発。五条散華の後、高専の総戦力が宿 wild な猛攻に順次挑む。絶望的な死闘の中、虎杖悠仁と仲間たちの魂をかけた魂の共鳴が宿儺を撃破へと導く。"
     },
     highlight: { en: "The ultimate showdown and final victory", ja: "史上最強の両面宿儺との決戦と大団円" },
-    energyColor: 'green'
+    energyColor: 'green',
+    gifUrl: "https://i.giphy.com/media/zkNBtlymM6zX4DndrU/giphy.gif"
   }
 ];
 
@@ -216,11 +225,26 @@ export const StoryHistory: React.FC<StoryHistoryProps> = ({ lang }) => {
 
               {/* Card Body */}
               {isOpen && (
-                <div className="arc-card-body">
-                  <p className="arc-description">{arc.desc[lang]}</p>
-                  <div className="arc-highlight-tag">
-                    <span className="tag-label">{lang === 'en' ? 'CRITICAL EVENT:' : '重要事項:'}</span>
-                    <span className="tag-content">{arc.highlight[lang]}</span>
+                <div className="arc-card-body" style={{ display: 'flex', gap: '20px', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <div style={{ flex: '1 1 300px' }}>
+                    <p className="arc-description">{arc.desc[lang]}</p>
+                    <div className="arc-highlight-tag">
+                      <span className="tag-label">{lang === 'en' ? 'CRITICAL EVENT:' : '重要事項:'}</span>
+                      <span className="tag-content">{arc.highlight[lang]}</span>
+                    </div>
+                  </div>
+                  <div className="arc-gif-container" style={{ flex: '0 0 180px', display: 'flex', justifyContent: 'center' }}>
+                    <img 
+                      src={arc.gifUrl} 
+                      alt={arc.title[lang]} 
+                      style={{ 
+                        width: '180px', 
+                        height: '110px', 
+                        objectFit: 'cover', 
+                        borderRadius: '4px', 
+                        border: '2px solid rgba(255,255,255,0.1)' 
+                      }} 
+                    />
                   </div>
                 </div>
               )}
