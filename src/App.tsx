@@ -383,6 +383,9 @@ export default function App() {
                 <StoryHistory lang={lang} />
               )}
             </div>
+            <div className="footer-credits" style={{ textAlign: 'center', fontSize: '12px', color: '#ff69b4', marginTop: '15px', letterSpacing: '1px', borderTop: '1px dashed rgba(255, 105, 180, 0.2)', paddingTop: '10px', textTransform: 'uppercase', opacity: 0.8 }}>
+              made by jujustru fan with love from india
+            </div>
           </footer>
 
           {/* 1. MISSION DETAILS DIALOG OVERLAY */}
