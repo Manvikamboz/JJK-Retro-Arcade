@@ -26,7 +26,8 @@ interface EnemyBug {
 }
 
 export const SpaceShooter: React.FC<SpaceShooterProps> = ({ lang, onGainXp, onGainCoins, isUnlocked }) => {
-  const [shipX, setShipX] = useState(50); // percentage 0 - 100
+  // --- Render state (drives JSX) ---
+  const [shipX, setShipX] = useState(50);
   const [lasers, setLasers] = useState<Laser[]>([]);
   const [enemies, setEnemies] = useState<EnemyBug[]>([]);
   const [score, setScore] = useState(0);
@@ -34,13 +35,26 @@ export const SpaceShooter: React.FC<SpaceShooterProps> = ({ lang, onGainXp, onGa
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
 
+  // --- Game logic refs (read/written imperatively by RAF loop) ---
+  // Keeping game state in refs prevents:
+  //   Bug #5: loop restarting on every laser fired (was: lasers in deps array)
+  //   Bug #3: nested setState inside setLasers updater (forbidden React pattern)
+  const shipXRef = useRef(50);
+  const lasersRef = useRef<Laser[]>([]);
+  const enemiesRef = useRef<EnemyBug[]>([]);
+  // Stable callback refs so the loop never captures stale versions
+  const onGainXpRef = useRef(onGainXp);
+  const onGainCoinsRef = useRef(onGainCoins);
+  useEffect(() => { onGainXpRef.current = onGainXp; }, [onGainXp]);
+  useEffect(() => { onGainCoinsRef.current = onGainCoins; }, [onGainCoins]);
+
   const gameAreaRef = useRef<HTMLDivElement | null>(null);
   const keysPressed = useRef<Record<string, boolean>>({});
   const gameLoopRef = useRef<number | null>(null);
   const nextLaserId = useRef(0);
   const nextEnemyId = useRef(0);
 
-  const SHIP_SPEED = 2; // movement increment
+  const SHIP_SPEED = 2;
 
   // Keyboard controls
   useEffect(() => {
@@ -69,95 +83,88 @@ export const SpaceShooter: React.FC<SpaceShooterProps> = ({ lang, onGainXp, onGa
     };
   }, [gameStarted, gameOver, isUnlocked]);
 
-  // Game Loop
+  // Game Loop — runs once per game session, never on laser/enemy state changes.
+  // All mutations happen on refs; setState is called once per frame for rendering.
   useEffect(() => {
     if (!gameStarted || gameOver || !isUnlocked) return;
 
     const updateGame = () => {
-      // Move ship
+      // --- Move ship ---
       if (keysPressed.current['ArrowLeft'] || keysPressed.current['KeyA']) {
-        setShipX(prev => Math.max(5, prev - SHIP_SPEED));
+        shipXRef.current = Math.max(5, shipXRef.current - SHIP_SPEED);
       }
       if (keysPressed.current['ArrowRight'] || keysPressed.current['KeyD']) {
-        setShipX(prev => Math.min(95, prev + SHIP_SPEED));
+        shipXRef.current = Math.min(95, shipXRef.current + SHIP_SPEED);
       }
 
-      // Handle shooting via Space
+      // --- Shoot via Space key ---
       if (keysPressed.current['Space']) {
-        keysPressed.current['Space'] = false; // single shoot per press
-        handleShoot();
+        keysPressed.current['Space'] = false; // one shot per press
+        audioEngine.playSound('click');
+        lasersRef.current = [
+          ...lasersRef.current,
+          { id: nextLaserId.current++, x: shipXRef.current, y: 15 }
+        ];
       }
 
-      // Move lasers
-      setLasers(prev => 
-        prev
-          .map(l => ({ ...l, y: l.y + 4 }))
-          .filter(l => l.y < 100) // remove off-screen
-      );
+      // --- Move lasers up ---
+      lasersRef.current = lasersRef.current
+        .map(l => ({ ...l, y: l.y + 4 }))
+        .filter(l => l.y < 100);
 
-      // Move enemies down
-      setEnemies(prev => {
-        let hitPlayer = false;
-        const updated = prev
-          .map(e => ({ ...e, y: e.y - 0.7 }))
-          .filter(e => {
-            if (e.y <= 10) {
-              hitPlayer = true; // hit bottom
-              return false;
-            }
-            return true;
-          });
-
-        if (hitPlayer) {
-          audioEngine.playSound('select');
-          setLives(prevLives => {
-            if (prevLives <= 1) {
-              setGameOver(true);
-              return 0;
-            }
-            return prevLives - 1;
-          });
-        }
-        return updated;
-      });
-
-      // Collision detection (Lasers vs Enemies)
-      setLasers(prevLasers => {
-        let laserHitIdxs: number[] = [];
-        let enemyHitIds: number[] = [];
-
-        setEnemies(prevEnemies => {
-          const remainingEnemies = prevEnemies.filter((enemy) => {
-            let hit = false;
-            prevLasers.forEach((laser, lIdx) => {
-              // Convert ship x (percentage) to approximate game coordinates
-              // Laser: x (percentage), y (0-100)
-              // Enemy: x (percentage), y (0-100)
-              const xDiff = Math.abs(laser.x - enemy.x);
-              const yDiff = Math.abs(laser.y - enemy.y);
-
-              if (xDiff < 6 && yDiff < 8) {
-                hit = true;
-                laserHitIdxs.push(lIdx);
-                enemyHitIds.push(enemy.id);
-              }
-            });
-
-            if (hit) {
-              audioEngine.playSound('coin');
-              setScore(s => s + 10);
-              onGainXp(15);
-              onGainCoins(5);
-              return false;
-            }
-            return true;
-          });
-
-          return remainingEnemies;
+      // --- Move enemies down, detect player hits ---
+      let hitPlayer = false;
+      enemiesRef.current = enemiesRef.current
+        .map(e => ({ ...e, y: e.y - 0.7 }))
+        .filter(e => {
+          if (e.y <= 10) {
+            hitPlayer = true;
+            return false;
+          }
+          return true;
         });
 
-        return prevLasers.filter((_, idx) => !laserHitIdxs.includes(idx));
+      if (hitPlayer) {
+        audioEngine.playSound('select');
+        setLives(prevLives => {
+          if (prevLives <= 1) {
+            setGameOver(true);
+            return 0;
+          }
+          return prevLives - 1;
+        });
+      }
+
+      // --- Collision detection: Lasers vs Enemies ---
+      // Computed together on refs — no nested setState, no forbidden updater pattern.
+      const hitLaserIdxs = new Set<number>();
+      const hitEnemyIds = new Set<number>();
+
+      enemiesRef.current.forEach(enemy => {
+        lasersRef.current.forEach((laser, lIdx) => {
+          if (Math.abs(laser.x - enemy.x) < 6 && Math.abs(laser.y - enemy.y) < 8) {
+            hitLaserIdxs.add(lIdx);
+            hitEnemyIds.add(enemy.id);
+          }
+        });
       });
+
+      if (hitEnemyIds.size > 0) {
+        audioEngine.playSound('coin');
+        hitEnemyIds.forEach(() => {
+          setScore(s => s + 10);
+          onGainXpRef.current(15);
+          onGainCoinsRef.current(5);
+        });
+      }
+
+      lasersRef.current = lasersRef.current.filter((_, idx) => !hitLaserIdxs.has(idx));
+      enemiesRef.current = enemiesRef.current.filter(e => !hitEnemyIds.has(e.id));
+
+      // --- Batch render — ONE setState call per entity type per frame ---
+      setShipX(shipXRef.current);
+      setLasers([...lasersRef.current]);
+      setEnemies([...enemiesRef.current]);
 
       gameLoopRef.current = requestAnimationFrame(updateGame);
     };
@@ -166,41 +173,48 @@ export const SpaceShooter: React.FC<SpaceShooterProps> = ({ lang, onGainXp, onGa
     return () => {
       if (gameLoopRef.current) cancelAnimationFrame(gameLoopRef.current);
     };
-  }, [gameStarted, gameOver, lasers, isUnlocked]);
+  // No `lasers` in deps — loop is stable regardless of laser count.
+  // gameStarted/gameOver/isUnlocked are intentionally kept so the loop
+  // starts/stops cleanly when game state changes.
+  }, [gameStarted, gameOver, isUnlocked]);
 
-  // Spawn enemies periodically
+  // Spawn enemies — writes to ref directly so the loop picks them up next tick
   useEffect(() => {
     if (!gameStarted || gameOver || !isUnlocked) return;
 
     const spawnTimer = setInterval(() => {
-      const randomX = 10 + Math.random() * 80;
-      const randomType = Math.floor(Math.random() * 3);
-      setEnemies(prev => [
-        ...prev,
-        {
-          id: nextEnemyId.current++,
-          x: randomX,
-          y: 95,
-          type: randomType,
-          width: 25
-        }
-      ]);
+      const newEnemy: EnemyBug = {
+        id: nextEnemyId.current++,
+        x: 10 + Math.random() * 80,
+        y: 95,
+        type: Math.floor(Math.random() * 3),
+        width: 25
+      };
+      // Write to ref — the RAF loop will pick it up on the next frame and
+      // call setEnemies([...enemiesRef.current]) to sync the render state.
+      enemiesRef.current = [...enemiesRef.current, newEnemy];
     }, 1800);
 
     return () => clearInterval(spawnTimer);
   }, [gameStarted, gameOver, isUnlocked]);
 
+  // handleShoot for mobile/button — updates ref so next RAF frame renders it
   const handleShoot = () => {
     audioEngine.playSound('click');
-    setLasers(prev => [
-      ...prev,
-      { id: nextLaserId.current++, x: shipX, y: 15 }
-    ]);
+    lasersRef.current = [
+      ...lasersRef.current,
+      { id: nextLaserId.current++, x: shipXRef.current, y: 15 }
+    ];
   };
 
   const handleRestart = () => {
+    // Reset both refs and state on restart
+    lasersRef.current = [];
+    enemiesRef.current = [];
+    shipXRef.current = 50;
     setEnemies([]);
     setLasers([]);
+    setShipX(50);
     setScore(0);
     setLives(3);
     setGameOver(false);
@@ -247,7 +261,7 @@ export const SpaceShooter: React.FC<SpaceShooterProps> = ({ lang, onGainXp, onGa
             <p>
               {lang === 'en' ? "Shoot down the rogue curses before they invade Nobara's territory!" : "野薔薇の縄張りに侵入する野良呪霊たちを撃ち落とせ！"}
             </p>
-            <button className="pixel-start-btn mt-4" onClick={() => { setGameStarted(true); restartMusic(); }}>
+            <button className="pixel-start-btn mt-4" onClick={() => { setGameStarted(true); audioEngine.playSound('start'); }}>
               {lang === 'en' ? 'INITIALIZE SCANNER' : 'スキャナー初期化'}
             </button>
           </div>
@@ -350,8 +364,4 @@ export const SpaceShooter: React.FC<SpaceShooterProps> = ({ lang, onGainXp, onGa
       </div>
     </div>
   );
-
-  function restartMusic() {
-    audioEngine.playSound('start');
-  }
 };
