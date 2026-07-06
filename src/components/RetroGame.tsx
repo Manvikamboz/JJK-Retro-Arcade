@@ -55,6 +55,8 @@ export const RetroGame: React.FC<RetroGameProps> = ({ lang, onGainXp, onGainCoin
   const keysPressed = useRef<Record<string, boolean>>({});
   const gameLoopRef = useRef<number | null>(null);
   const gameContainerRef = useRef<HTMLDivElement | null>(null);
+  // Prevents onUnlockSecret from re-firing while player stays near the door
+  const secretTriggeredRef = useRef<boolean>(false);
 
   // Constants
   const GROUND_LEVEL = 40;
@@ -222,11 +224,18 @@ export const RetroGame: React.FC<RetroGameProps> = ({ lang, onGainXp, onGainCoin
     const isNearDoor = posX > doorX - 40 && posX < doorX + 40;
     setShowPortalInfo(isNearDoor);
 
-    if (isNearDoor && hasKey) {
-      // Trigger unlock secret!
+    if (isNearDoor && hasKey && !secretTriggeredRef.current) {
+      // Trigger unlock secret — guard with ref so it only fires once per key
+      secretTriggeredRef.current = true;
       audioEngine.playSound('start');
       onUnlockSecret();
       setHasKey(false); // Consume key
+    }
+
+    // Reset the trigger guard when player moves away from the door,
+    // so a newly collected key can open the portal again in the same session
+    if (!isNearDoor) {
+      secretTriggeredRef.current = false;
     }
 
   }, [posX, posY, keyCollected, hasKey, onGainXp, onUnlockSecret]);
