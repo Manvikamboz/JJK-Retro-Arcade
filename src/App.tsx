@@ -213,7 +213,7 @@ export default function App() {
             
             <div className="start-decorations" style={{ display: 'flex', justifyContent: 'center', margin: '25px 0' }}>
               <img 
-                src="https://media.tenor.com/EMVfLnBoRr0AAAAC/jujutsu-kaisen-megumi-nobara-10-points-jujutsu-kaisen.gif" 
+                src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZW5vNDUxYzJheHVsZ29zY3lreXZubnh0Z3B5c2I4Znh1NmV5enViZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zkNBtlymM6zX4DndrU/giphy.gif" 
                 alt="Nobara Kugisaki" 
                 style={{ width: '220px', height: '130px', objectFit: 'cover', border: '3px solid var(--color-border-pink)', borderRadius: '4px' }}
               />
