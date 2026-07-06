@@ -1,4 +1,4 @@
-# JJK Retro Arcade Portfolio
+# JJK Retro Arcade
 
 An interactive, retro-glowing Nintendo 3DS themed arcade portfolio dedicated to Satoru Gojo, Yuji Itadori, Nobara Kugisaki, and the world of **Jujutsu Kaisen**.
 
