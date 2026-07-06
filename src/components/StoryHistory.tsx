@@ -290,6 +290,48 @@ export const StoryHistory: React.FC<StoryHistoryProps> = ({ lang }) => {
           ))}
         </div>
       </div>
+
+      {/* WATCH JUJUTSU KAISEN / STREAMING SECTION */}
+      <div className="manga-buy-section watch-anime-section" style={{ marginTop: '30px', borderTop: '2px dashed rgba(0, 243, 255, 0.2)', paddingTop: '30px' }}>
+        <div className="buy-header-box">
+          <div className="buy-title-glow" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span className="cart-icon">🎬</span>
+            <h3>{lang === 'en' ? 'WATCH JUJUTSU KAISEN' : 'アニメ「呪術廻戦」を視聴する'}</h3>
+          </div>
+          <p className="buy-subtitle">
+            {lang === 'en'
+              ? 'Stream the legendary anime adaptation. Watch Satoru Gojo, Yuji Itadori, and Nobara Kugisaki in action officially on:'
+              : '伝説のアニメ化をストリーミング配信で観よう。五条悟、虎杖悠仁、釘崎野薔薇たちの活躍を公式で視聴：'}
+          </p>
+        </div>
+
+        <div className="retailers-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', justifyContent: 'center', display: 'flex' }}>
+          <a 
+            href="https://www.hotstar.com/in/shows/jujutsu-kaisen/1271461634?search_query=gekijban+jujutsu+kaisen+zero" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="retailer-card"
+            onClick={handleStoreClick}
+            style={{ width: '100%', maxWidth: '400px', borderColor: 'var(--color-cyan-glow)' }}
+          >
+            <div className="retailer-badge" style={{ backgroundColor: 'rgba(0, 243, 255, 0.1)', color: 'var(--color-text-cyan)' }}>
+              {lang === 'en' ? 'Official Stream' : '公式配信'}
+            </div>
+            <div className="retailer-card-header">
+              <span className="retailer-index">📺</span>
+              <h4 className="retailer-name">JioHotstar</h4>
+            </div>
+            <p className="retailer-desc">
+              {lang === 'en'
+                ? 'Watch all seasons, episodes, and movies including Jujutsu Kaisen 0 with premium high-definition streaming.'
+                : '劇場版 呪術廻戦 0 を含む全シーズン、エピソードをプレミアム高画質ストリーミングで視聴可能。'}
+            </p>
+            <div className="retailer-redirect-btn" style={{ borderColor: 'var(--color-cyan-glow)', color: 'var(--color-text-cyan)' }}>
+              <span>{lang === 'en' ? 'WATCH ON JIOHOTSTAR ➔' : 'JIOHOTSTAR で視聴 ➔'}</span>
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
   );
 };
