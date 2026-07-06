@@ -451,7 +451,11 @@ export default function App() {
                       className="modal-action-btn primary-action"
                       onClick={() => {
                         audioEngine.playSound('powerup');
-                        alert(lang === 'en' ? `Launching ${activeMission.title.en}...` : `${activeMission.title.ja}を起動中...`);
+                        if (activeMission.link && activeMission.link !== '#') {
+                          window.open(activeMission.link, '_blank', 'noopener,noreferrer');
+                        } else {
+                          alert(lang === 'en' ? `No live link available for ${activeMission.title.en} yet.` : `${activeMission.title.ja}のライブリンクはまだありません。`);
+                        }
                       }}
                     >
                       🚀 {lang === 'en' ? 'LAUNCH LIVE SITE' : 'サイトを起動'}
@@ -501,8 +505,9 @@ export default function App() {
                       <span className="loot-icon">📄</span>
                       <span className="loot-label">{uiTranslations.sorcererIdLabel[lang]}:</span>
                       <a 
-                        href="#download" 
-                        onClick={(e) => { e.preventDefault(); alert(lang === 'en' ? "Downloading Nobara's Sorcerer Registration PDF..." : "釘崎野薔薇の呪術師登録証PDFをダウンロード中..."); }} 
+                        href="/resume.pdf"
+                        download="Nobara_Kugisaki_Sorcerer_Registration.pdf"
+                        onClick={() => audioEngine.playSound('powerup')}
                         className="loot-link text-glow-green"
                       >
                         {uiTranslations.resumeBtnText[lang]}

@@ -237,7 +237,7 @@ export const missionsData: ProjectMission[] = [
     },
     tech: ["Straw Doll", "Basic Melee", "Hostage Rescue"],
     imageUrl: "/roppongi_building.png",
-    link: "#",
+    link: "https://github.com/Manvikamboz/JJK-Retro-Arcade",
     details: {
       en: [
         "Secured the perimeter and entered the building with Yuji Itadori.",
@@ -276,7 +276,7 @@ export const missionsData: ProjectMission[] = [
     },
     tech: ["Resonance", "Hairpin", "Black Flash"],
     imageUrl: "/yasohachi_bridge.png",
-    link: "#",
+    link: "https://github.com/Manvikamboz/JJK-Retro-Arcade",
     details: {
       en: [
         "Tracked the mysterious source of the Yasohachi Bridge curse.",
@@ -315,7 +315,7 @@ export const missionsData: ProjectMission[] = [
     },
     tech: ["Cursed Nails", "Tactical Retreat", "Evasion"],
     imageUrl: "/detention_center.png",
-    link: "#",
+    link: "https://github.com/Manvikamboz/JJK-Retro-Arcade",
     details: {
       en: [
         "Infiltrated the detention center complex and navigated the shifting pocket dimension.",
@@ -354,7 +354,7 @@ export const missionsData: ProjectMission[] = [
     },
     tech: ["Resonance", "Cursed Combat", "High Output Hairpin"],
     imageUrl: "/shibuya_incident.png",
-    link: "#",
+    link: "https://github.com/Manvikamboz/JJK-Retro-Arcade",
     details: {
       en: [
         "Deployed to Shibuya to maintain lines of communication and rescue civilians.",
