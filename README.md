@@ -2,7 +2,7 @@
 
 An interactive, retro-glowing Nintendo 3DS themed arcade portfolio dedicated to Satoru Gojo, Yuji Itadori, Nobara Kugisaki, and the world of **Jujutsu Kaisen**.
 
-![Jujutsu Kaisen Arcade](https://tenor.com/vvCHURj08yV.gif)
+![Jujutsu Kaisen Arcade](https://media1.tenor.com/m/-KGzQiMihX8AAAAC/nobara-nobara-kugisaki.gif)
 
 ## Features & Interactive Zones
 
