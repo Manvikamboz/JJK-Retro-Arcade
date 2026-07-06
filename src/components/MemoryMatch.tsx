@@ -86,7 +86,7 @@ export const MemoryMatch: React.FC<MemoryMatchProps> = ({ lang, onGainXp, onGain
       const [firstIdx, secondIdx] = nextSelected;
 
       // Check match
-      if (cards[firstIdx].label === cards[secondIdx].label) {
+      if (cards[firstIdx].symbol === cards[secondIdx].symbol) {
         // MATCH FOUND
         setTimeout(() => {
           audioEngine.playSound('coin');
