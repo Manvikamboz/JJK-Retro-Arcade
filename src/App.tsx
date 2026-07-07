@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ConsoleUI } from './components/ConsoleUI';
 import { RetroGame } from './components/RetroGame';
 import { SpaceShooter } from './components/SpaceShooter';
@@ -65,34 +65,43 @@ export default function App() {
     }
   };
 
-  const handleGainXp = (amount: number) => {
+  const handleGainXp = useCallback((amount: number) => {
     setXp(prevXp => {
+      // Use setPlayerLevel functional updater to read current level without stale closure
       let currentXp = prevXp + amount;
-      let currentLvl = playerLevel;
-      let threshold = getXpThresholdForLevel(currentLvl);
       let leveledUp = false;
+      let newLevel = 0;
 
-      while (currentXp >= threshold && currentLvl < 10) {
-        currentXp -= threshold;
-        currentLvl += 1;
-        threshold = getXpThresholdForLevel(currentLvl);
-        leveledUp = true;
-      }
+      setPlayerLevel(prevLevel => {
+        let currentLvl = prevLevel;
+        let threshold = getXpThresholdForLevel(currentLvl);
+
+        while (currentXp >= threshold && currentLvl < 10) {
+          currentXp -= threshold;
+          currentLvl += 1;
+          threshold = getXpThresholdForLevel(currentLvl);
+          leveledUp = true;
+        }
+
+        if (leveledUp) {
+          newLevel = currentLvl;
+        }
+        return currentLvl;
+      });
 
       if (leveledUp) {
-        setPlayerLevel(currentLvl);
-        setLevelUpNumber(currentLvl);
+        setLevelUpNumber(newLevel);
         setShowLevelUpSplash(true);
         audioEngine.playSound('powerup');
       }
 
       return currentXp;
     });
-  };
+  }, []);
 
-  const handleGainCoins = (amount: number) => {
+  const handleGainCoins = useCallback((amount: number) => {
     setCoins(prev => prev + amount);
-  };
+  }, []);
 
   const handleUpgradeStat = (stat: 'atk' | 'def' | 'spd') => {
     if (coins >= 15) {
@@ -117,12 +126,12 @@ export default function App() {
     }
   }, [showLevelUpSplash]);
 
-  const handleUnlockSecret = () => {
-    if (!unlockedSecret) {
-      setUnlockedSecret(true);
-      audioEngine.playSound('powerup');
-    }
-  };
+  const handleUnlockSecret = useCallback(() => {
+    setUnlockedSecret(prev => {
+      if (!prev) audioEngine.playSound('powerup');
+      return true;
+    });
+  }, []);
 
   const handleRedirectToStory = () => {
     setActiveZoneTab('story');
