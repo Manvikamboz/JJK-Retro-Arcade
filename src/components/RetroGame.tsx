@@ -238,7 +238,7 @@ export const RetroGame: React.FC<RetroGameProps> = ({ lang, onGainXp, onGainCoin
       secretTriggeredRef.current = false;
     }
 
-  }, [posX, posY, keyCollected, hasKey, onGainXp, onUnlockSecret]);
+  }, [posX, posY, keyCollected, hasKey, onGainXp, onGainCoins, onUnlockSecret]);
 
   // Scroll viewport to center the player on mobile/narrow screens
   useEffect(() => {
