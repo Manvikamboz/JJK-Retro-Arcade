@@ -268,7 +268,7 @@ export default function App() {
                 onClick={handleToggleMute}
                 title={muted ? uiTranslations.unmute[lang] : uiTranslations.mute[lang]}
               >
-                {muted ? `🔇 ${uiTranslations.mute[lang]}` : `🔊 ${uiTranslations.unmute[lang]}`}
+                {muted ? `🔇 ${uiTranslations.unmute[lang]}` : `🔊 ${uiTranslations.mute[lang]}`}
               </button>
             </div>
           </header>
