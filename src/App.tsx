@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ConsoleUI } from './components/ConsoleUI';
 import { RetroGame } from './components/RetroGame';
 import { SpaceShooter } from './components/SpaceShooter';
@@ -65,34 +65,43 @@ export default function App() {
     }
   };
 
-  const handleGainXp = (amount: number) => {
+  const handleGainXp = useCallback((amount: number) => {
     setXp(prevXp => {
+      // Use setPlayerLevel functional updater to read current level without stale closure
       let currentXp = prevXp + amount;
-      let currentLvl = playerLevel;
-      let threshold = getXpThresholdForLevel(currentLvl);
       let leveledUp = false;
+      let newLevel = 0;
 
-      while (currentXp >= threshold && currentLvl < 10) {
-        currentXp -= threshold;
-        currentLvl += 1;
-        threshold = getXpThresholdForLevel(currentLvl);
-        leveledUp = true;
-      }
+      setPlayerLevel(prevLevel => {
+        let currentLvl = prevLevel;
+        let threshold = getXpThresholdForLevel(currentLvl);
+
+        while (currentXp >= threshold && currentLvl < 10) {
+          currentXp -= threshold;
+          currentLvl += 1;
+          threshold = getXpThresholdForLevel(currentLvl);
+          leveledUp = true;
+        }
+
+        if (leveledUp) {
+          newLevel = currentLvl;
+        }
+        return currentLvl;
+      });
 
       if (leveledUp) {
-        setPlayerLevel(currentLvl);
-        setLevelUpNumber(currentLvl);
+        setLevelUpNumber(newLevel);
         setShowLevelUpSplash(true);
         audioEngine.playSound('powerup');
       }
 
       return currentXp;
     });
-  };
+  }, []);
 
-  const handleGainCoins = (amount: number) => {
+  const handleGainCoins = useCallback((amount: number) => {
     setCoins(prev => prev + amount);
-  };
+  }, []);
 
   const handleUpgradeStat = (stat: 'atk' | 'def' | 'spd') => {
     if (coins >= 15) {
@@ -117,12 +126,12 @@ export default function App() {
     }
   }, [showLevelUpSplash]);
 
-  const handleUnlockSecret = () => {
-    if (!unlockedSecret) {
-      setUnlockedSecret(true);
-      audioEngine.playSound('powerup');
-    }
-  };
+  const handleUnlockSecret = useCallback(() => {
+    setUnlockedSecret(prev => {
+      if (!prev) audioEngine.playSound('powerup');
+      return true;
+    });
+  }, []);
 
   const handleRedirectToStory = () => {
     setActiveZoneTab('story');
@@ -268,7 +277,7 @@ export default function App() {
                 onClick={handleToggleMute}
                 title={muted ? uiTranslations.unmute[lang] : uiTranslations.mute[lang]}
               >
-                {muted ? `🔇 ${uiTranslations.mute[lang]}` : `🔊 ${uiTranslations.unmute[lang]}`}
+                {muted ? `🔇 ${uiTranslations.unmute[lang]}` : `🔊 ${uiTranslations.mute[lang]}`}
               </button>
             </div>
           </header>
@@ -451,7 +460,11 @@ export default function App() {
                       className="modal-action-btn primary-action"
                       onClick={() => {
                         audioEngine.playSound('powerup');
-                        alert(lang === 'en' ? `Launching ${activeMission.title.en}...` : `${activeMission.title.ja}を起動中...`);
+                        if (activeMission.link && activeMission.link !== '#') {
+                          window.open(activeMission.link, '_blank', 'noopener,noreferrer');
+                        } else {
+                          alert(lang === 'en' ? `No live link available for ${activeMission.title.en} yet.` : `${activeMission.title.ja}のライブリンクはまだありません。`);
+                        }
                       }}
                     >
                       🚀 {lang === 'en' ? 'LAUNCH LIVE SITE' : 'サイトを起動'}
@@ -501,8 +514,9 @@ export default function App() {
                       <span className="loot-icon">📄</span>
                       <span className="loot-label">{uiTranslations.sorcererIdLabel[lang]}:</span>
                       <a 
-                        href="#download" 
-                        onClick={(e) => { e.preventDefault(); alert(lang === 'en' ? "Downloading Nobara's Sorcerer Registration PDF..." : "釘崎野薔薇の呪術師登録証PDFをダウンロード中..."); }} 
+                        href="/resume.pdf"
+                        download="Nobara_Kugisaki_Sorcerer_Registration.pdf"
+                        onClick={() => audioEngine.playSound('powerup')}
                         className="loot-link text-glow-green"
                       >
                         {uiTranslations.resumeBtnText[lang]}
